@@ -118,12 +118,13 @@ Bonus features only supported in the jQuery version
     formtype ( `input`, or `textarea` ).
     
     To write your own form types, just extend the `RestInPlace.forms` object
-    and select your new form type throught the `data-formtype` attribute.
+    and select your new form type through the `data-formtype` attribute.
     
 -   The optional `data-raw` attribute can be used in tandem with textile
     or markdown. The plugin will use this value to populate the edit form
-    instead of the HTML of the element.
-
+    instead of the HTML of the element. In the JSON for the show action you
+    should also return a key-value pair for `#{attributeName}-raw` .
+		
 -   The optional `activator` attribute can be used as a jQuery selector for
     the element(s) that will activate the editing process.
 
