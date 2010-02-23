@@ -14,13 +14,17 @@
 <body>
     <div id="<%= dom_id @user %>">
       ID: <%= @user.id %><br />
-      Name: <span class="rest_in_place" data-formtype="input" data-attribute="name"><%= @user.name %></span><br/><br/>
+      Name: <span class="rest_in_place" data-formtype="input" data-attribute="name"><%= @user.name %></span><br/>
       Hobbies: <span class="rest_in_place" data-formtype="textarea" data-attribute="hobbies"><%= @user.hobbies %></span>
     </div>
 
+    <br/>
+    
     <div id="<%= dom_id @user2 %>" data-url="<%= url_for(@user2) %>">
       ID: <%= @user2.id %><br />
-      Name: <span class="rest_in_place" data-attribute="name"><%= @user2.name %></span><br/><br/>
+      Name: <span class="rest_in_place" data-attribute="name" activator="#<%= dom_id @user2 %>_edit"><%= @user2.name %></span>
+      <small id="<%= dom_id @user2 %>_edit">click here to edit</small>
+      <br/>
       Hobbies: <span class="rest_in_place" data-formtype="textarea" data-attribute="hobbies"><%= @user2.hobbies %></span>
     </div>    
 </body> 
