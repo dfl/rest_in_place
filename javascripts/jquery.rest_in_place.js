@@ -3,22 +3,23 @@ function RestInPlaceEditor(e) {
   this.initOptions();
   this.bindForm();
   
-  this.element.bind('click', {editor: this}, this.clickHandler);
+  this.activator.bind('click', {editor: this}, this.clickHandler);
 }
 
 RestInPlaceEditor.prototype = {
   // Public Interface Functions //////////////////////////////////////////////
   
   activate : function() {
-    this.oldValue = this.element.html();    
-    this.element.unbind('click', this.clickHandler)
+    this.oldValue = this.element.html();
+		this.rawValue = this.element.attr('data-raw') || this.oldValue;
+    this.activator.unbind('click', this.clickHandler);
     this.activateForm();
   },
   
   abort : function() {
     this.element
-      .html(this.oldValue)
-      .bind('click', {editor: this}, this.clickHandler);
+      .html(this.oldValue);
+    this.activator.bind('click', {editor: this}, this.clickHandler);
   },
   
   update : function() {
@@ -63,6 +64,8 @@ RestInPlaceEditor.prototype = {
     self.formType      = self.element.attr("data-formtype")  || self.formtype || "input";
     self.objectName    = self.element.attr("data-object")    || self.objectName;
     self.attributeName = self.element.attr("data-attribute") || self.attributeName;
+		self.activator     = self.element.attr("activator")      || self.element
+		self.activator = $( self.activator )
   },
   
   bindForm : function() {
@@ -79,8 +82,10 @@ RestInPlaceEditor.prototype = {
     //jq14: data as JS object, not string.
     var data = "_method=put";
     data += "&"+this.objectName+'['+this.attributeName+']='+encodeURIComponent(this.getValue());
-    if (window.rails_authenticity_token) {
-      data += "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token);
+    if ( token = window.rails_authenticity_token) {
+ 			if(!token.match(/%/))
+				token = encodeURIComponent( token );
+      data += "&authenticity_token="+token
     }
     return data;
   },
@@ -97,7 +102,8 @@ RestInPlaceEditor.prototype = {
     //jq14: data as JS object, not string.
     if (jQuery.fn.jquery < "1.4") data = eval('(' + data + ')' );
     this.element.html(data[this.objectName][this.attributeName]);
-    this.element.bind('click', {editor: this}, this.clickHandler);    
+		this.element.attr('data-raw', data[this.objectName][this.attributeName+'-raw'] )
+    this.activator.bind('click', {editor: this}, this.clickHandler);    
   },
   
   clickHandler : function(event) {
@@ -110,7 +116,7 @@ RestInPlaceEditor.forms = {
   "input" : {
     /* is bound to the editor and called to replace the element's content with a form for editing data */
     activateForm : function() {
-      this.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + this.oldValue + '"></form>');
+      this.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + this.rawValue + '"></form>');
       this.element.find('input')[0].select();
       this.element.find("form")
         .bind('submit', {editor: this}, RestInPlaceEditor.forms.input.submitHandler);
@@ -135,7 +141,7 @@ RestInPlaceEditor.forms = {
   "textarea" : {
     /* is bound to the editor and called to replace the element's content with a form for editing data */
     activateForm : function() {
-      this.element.html('<form action="javascript:void(0)" style="display:inline;"><textarea>' + this.oldValue + '</textarea></form>');
+      this.element.html('<form action="javascript:void(0)" style="display:inline;"><textarea>' + this.rawValue + '</textarea></form>');
       this.element.find('textarea')[0].select();
       this.element.find("textarea")
         .bind('blur', {editor: this}, RestInPlaceEditor.forms.textarea.blurHandler);

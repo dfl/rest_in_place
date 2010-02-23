@@ -109,6 +109,9 @@ follows:
     **Note that a manually defined (in the element or in one of the parents)  
     object always overrides dom_id recognition.**
 
+Bonus features only supported in the jQuery version
+===================================================
+
 -   REST in Place supports multiple form types. The default type is a input
     field, a textarea is also supported. To select a form type use the
     `data-formtype` attribute in the element and set it to the name of your
@@ -117,7 +120,12 @@ follows:
     To write your own form types, just extend the `RestInPlace.forms` object
     and select your new form type throught the `data-formtype` attribute.
     
-    **This feature is only supported in the jQuery version.**
+-   The optional `data-raw` attribute can be used in tandem with textile
+    or markdown. The plugin will use this value to populate the edit form
+    instead of the HTML of the element.
+
+-   The optional `activator` attribute can be used as a jQuery selector for
+    the element(s) that will activate the editing process.
 
 Example
 =======
